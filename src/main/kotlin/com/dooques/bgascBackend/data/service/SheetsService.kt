@@ -14,6 +14,10 @@ class SheetsService(
     private val sheetsService: Sheets,
     @Value($$"${SHEETS_ID}") private val spreadsheetID: String
 ) {
+    /* This service will interact with a sheets document
+    *  Get Current Hours - Return the hours from the current month or set a specific date.
+    *  Post Logged Hours - Post your hours to the sheet using a DTO (Data Transfer Object)
+    *  */
     val spreadsheetId: String = spreadsheetID
 
     fun getCurrentHours(
@@ -24,6 +28,9 @@ class SheetsService(
             .get(spreadsheetId, range)
             .execute()
         val hoursList = mutableListOf<HoursDto>()
+
+        println("Response: $response")
+
         response.values.map { value ->
             if (value is List<*>) {
                 value.map { hoursObject ->
@@ -40,7 +47,10 @@ class SheetsService(
                         val date = LocalDate.of(year.toInt(), month.toInt(), day.toInt())
                         val hours = hoursObject[3].toString().toInt()
                         val extraHours = hoursObject[4].toString().toIntOrNull()
-                        val reasonForExtraHours = hoursObject[5].toString()
+                        var reasonForExtraHours: String? = null
+                        if (hoursObject.size > 5) {
+                            reasonForExtraHours = hoursObject[5].toString()
+                        }
 
                         hoursList.add(HoursDto(
                             name = name,
@@ -59,7 +69,7 @@ class SheetsService(
         return hoursList
     }
 
-    fun appendValue(range: String, hoursDto: HoursDto): HoursDto {
+    fun postLoggedHours(range: String, hoursDto: HoursDto): HoursDto {
 
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val dateString = formatter.format(hoursDto.date)

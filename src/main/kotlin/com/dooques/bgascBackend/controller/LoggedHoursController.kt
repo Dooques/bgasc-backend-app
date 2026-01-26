@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @RestController
@@ -49,6 +48,6 @@ class LoggedHoursController(
         @RequestParam(required = false) year: Int?,
         @RequestBody hoursDto: HoursDto
     ): HoursDto {
-        return sheetsService.appendValue("$dateFormat!A1:F", hoursDto)
+        return sheetsService.postLoggedHours("$dateFormat!A1:F", hoursDto)
     }
 }
