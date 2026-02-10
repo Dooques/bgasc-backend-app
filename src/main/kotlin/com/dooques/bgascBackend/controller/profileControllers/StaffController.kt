@@ -19,9 +19,9 @@ class StaffController(
         println("***************************************")
     }
 
-    @GetMapping("/one")
-    fun getStaffById(idToken: String) =
-        firestoreService.getStaffById(idToken)
+    @GetMapping("/single")
+    fun getStaffById(name: String) =
+        firestoreService.getStaffById(name)
 
     @GetMapping("/all")
     fun getAllStaff() =

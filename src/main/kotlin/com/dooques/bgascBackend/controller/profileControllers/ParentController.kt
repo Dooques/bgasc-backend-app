@@ -20,9 +20,9 @@ class ParentController(
         println("***************************************")
     }
 
-    @GetMapping("/one")
-    fun getParentById(@RequestParam idToken: String) =
-        firestoreService.getParentById(idToken)
+    @GetMapping("/single")
+    fun getParentById(@RequestParam name: String) =
+        firestoreService.getParentById(name)
 
     @GetMapping("/all")
     fun getAllParents() =

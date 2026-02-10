@@ -3,8 +3,10 @@ package com.dooques.bgascBackend.data.repository
 import com.dooques.bgascBackend.data.dto.StaffDto
 import com.google.cloud.firestore.Firestore
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseToken
 import com.google.firebase.cloud.FirestoreClient
 import org.springframework.stereotype.Repository
+import java.io.FileNotFoundException
 
 @Repository
 class StaffProfileRepository {
@@ -12,7 +14,14 @@ class StaffProfileRepository {
 
     fun saveStaff(idToken: String, staff: StaffDto): StaffDto {
         println("Saving staff profile: $staff")
-        val decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken)
+        println("Checking Id Token: $idToken")
+        val decodedToken: FirebaseToken
+        try {
+            decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken)
+        } catch (e: Exception) {
+            println("Error verifying token: $e")
+            throw e
+        }
         val uid = decodedToken.uid
         val name = decodedToken.name
         val email = decodedToken.email
@@ -47,22 +56,36 @@ class StaffProfileRepository {
         val decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken)
         val uid = decodedToken.uid
 
-        db.collection("staff").document(staff.id ?: throw NullPointerException("Staff ID is null")).set(staff).get()
+        try {
+            db.collection("staff").document(staff.id ?: throw NullPointerException("Staff ID is null")).set(staff).get()
+        } catch (e: Exception) {
+            println("Error updating staff profile: $e")
+            throw e
+        }
     }
 
     fun deleteStaff(idToken: String) {
         val decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken)
 
-        db.collection("staff").document(decodedToken.uid).delete().get()
+        try {
+            db.collection("staff").document(decodedToken.uid).delete().get()
+        } catch (e: Exception) {
+            println("Error deleting staff profile: $e")
+            throw e
+        }
     }
 
-    fun getStaffById(userId: String): StaffDto? {
-        println("Getting staff profile for $userId")
-        val docRef = db.collection("staff").document(userId)
-        val snapshot = docRef.get().get()
-        return if (snapshot.exists())
-            snapshot.toObject(StaffDto::class.java)
-        else null
+    fun getStaffByName(name: String): List<StaffDto?> {
+        println("Getting staff profile for $name")
+        val collectionRef = db.collection("staff")
+        val query = collectionRef
+            .whereEqualTo("name", name)
+            .get()
+            .get()
+        println("Got staff profile: $query")
+        return query.mapNotNull {
+            it.toObject(StaffDto::class.java)
+        }
     }
 
     fun getAllStaff(): List<StaffDto>? {

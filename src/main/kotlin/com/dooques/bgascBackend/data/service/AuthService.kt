@@ -9,11 +9,18 @@ import org.springframework.web.server.ResponseStatusException
 
 @Service
 class AuthService {
-    fun verifyGoogleUser(idToken: String): FirebaseToken {
+    fun verifyGoogleUser(userToken: String): FirebaseToken {
+        println("Verifying Google User: $userToken")
         return try {
-            FirebaseAuth.getInstance().verifyIdToken(idToken)
+            val idToken = FirebaseAuth.getInstance().verifyIdToken(userToken)
+            println("Successfully verified ID token for ${idToken.uid}")
+            idToken
         } catch (e: FirebaseAuthException) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token: $e")
+            println("Error verifying Firebase ID token: $e")
+            throw ResponseStatusException(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid token: $e"
+            )
         }
     }
 }

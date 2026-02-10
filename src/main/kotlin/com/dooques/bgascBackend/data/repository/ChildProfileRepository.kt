@@ -51,11 +51,12 @@ class ChildProfileRepository {
         }
     }
 
-    fun getChildById(userId: String): ChildDto? {
-        val docRef = db.collection("children").document(userId)
-        val snapshot = docRef.get().get()
-        return if (snapshot.exists())
-            snapshot.toObject(ChildDto::class.java)
-        else null
+    fun getChildByName(name: String): List<ChildDto>? {
+        val snapshot = db.collection("children")
+            .whereEqualTo("name", name)
+            .get().get()
+        return snapshot.mapNotNull {
+            it.toObject(ChildDto::class.java)
+        }
     }
 }

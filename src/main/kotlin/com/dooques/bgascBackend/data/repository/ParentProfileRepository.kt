@@ -42,12 +42,14 @@ class ParentProfileRepository {
         db.collection("parents").document(uid).delete().get()
     }
 
-    fun getParentById(userId: String): ParentDto? {
-        val docRef = db.collection("parents").document(userId)
-        val snapshot = docRef.get().get()
-        return if (snapshot.exists())
-            snapshot.toObject(ParentDto::class.java)
-        else null
+    fun getParentByName(name: String): List<ParentDto>? {
+        val snapshot = db.collection("parents")
+            .whereEqualTo("name", name)
+            .get()
+            .get()
+        return snapshot.mapNotNull {
+            it.toObject(ParentDto::class.java)
+        }
     }
 
     fun getAllParents(): List<ParentDto>? {

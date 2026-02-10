@@ -46,11 +46,11 @@ class FirestoreService(
     fun getParentProfiles() =
         parentProfileRepository.getAllParents()
 
-    fun getStaffById(userId: String) =
-        staffProfileRepository.getStaffById(userId)
-    fun getChildById(userId: String) =
-        childProfileRepository.getChildById(userId)
-    fun getParentById(userId: String) =
-        parentProfileRepository.getParentById(userId)
+    fun getStaffById(name: String) =
+        staffProfileRepository.getStaffByName(name)
+    fun getChildByName(name: String) =
+        childProfileRepository.getChildByName(name)
+    fun getParentById(name: String) =
+        parentProfileRepository.getParentByName(name)
 
 }
