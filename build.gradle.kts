@@ -34,8 +34,13 @@ dependencies {
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.39.0")
     implementation("com.google.apis:google-api-services-sheets:v4-rev20250106-2.0.0")
     implementation("com.google.firebase:firebase-admin:9.7.0")
+    compileOnly("com.google.cloud.functions:functions-framework-api:1.1.0")
+    implementation("org.springframework.cloud:spring-cloud-function-adapter-gcp:4.0.0") // Check for latest version compatible with Spring Boot 3+
+    implementation("org.springframework.cloud:spring-cloud-starter-function-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit6")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
